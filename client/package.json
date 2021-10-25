@@ -1,7 +1,7 @@
 {
-  "name": "woonkly",
+  "name": "kalakalmovies",
   "version": "1.0.0",
-  "description": "Woonkly",
+  "description": "Netflix Clone",
   "private": true,
   "main": "src/index.js",
   "dependencies": {

@@ -79,7 +79,7 @@ export default function Info(props) {
 		var rhours = Math.floor(hours);
 		var minutes = (hours - rhours) * 60;
 		var rminutes = Math.round(minutes);
-		return rhours + " hrs" + rminutes + " mins";
+		return rhours + " hrs " + rminutes + " mins";
 	}
 	function hideDetailowner() {
 		document.getElementById("image_div_owner").classList.toggle('expand_img');
@@ -130,7 +130,6 @@ export default function Info(props) {
 											<span className="badge badge-purple-soon ml-3">{movie && movie.status} {movie &&  movie.status == true && 'Adult'}</span>
 										</div>
 										<img src={config.imagerootpath + movie.poster_path || movie.backdrop_path} alt="Collections" className="img-fluid info_img" />
-
 									</div>
 								</div>
 								<div className="img_des" id="img_des">
@@ -149,6 +148,7 @@ export default function Info(props) {
 										<span class="badge badge-green-outline mb-2">{movie && timeConvert(movie && movie.runtime)}</span>
 										<span class="badge badge-grey-outline mb-2 ml-2">{ movie &&  `IMDB : ${movie.vote_average}`}</span>
 										<span className="mt-0 banner_desc_user_grey ml-2 mb-2">{movie && movie.original_language}</span>
+										<span className="mt-0 banner_desc_user_grey ml-2 mb-2"><a href={movie && movie.homepage} target="_blank">Watch Now</a></span>
 									</p>
 
 

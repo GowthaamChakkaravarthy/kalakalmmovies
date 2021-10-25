@@ -3,26 +3,26 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-var RegisterUserSchema = mongoose.Schema({
-    name: {
+var FavouriteMovieSchema = mongoose.Schema({
+    original_title: {
         type: String,
         default:""
     },
-    password: {
+    poster_path: {
         type: String,
         default: "",
     },
-    email :{
+    backdrop_path :{
       type: String,
       default: "",
     },
-    bio: {
-        type: String,
+    movieid : {
+        type: Number,
         required: true,
     },
     
     CreatedAt: { type: Date, default: Date.now }
 });
 
-var users = mongoose.model("users", RegisterUserSchema);
-module.exports = users;
+var favouritemovie = mongoose.model("favouritemovie", FavouriteMovieSchema);
+module.exports = favouritemovie;

@@ -13,13 +13,10 @@ export default function Card(props) {
 			<div>
 				<div className="img_overlay">
 					<div className="d-flex justify-content-between pos_top">
-						<span className="badge badge_black_round mr-3">
-							<i class="fas fa-heart"></i>
-						</span>
 					</div>
-					{/* <div className="text-center pos_bot">
-						<Button className="create_btn"><span className="font_12">Place a bid</span><i class="fas fa-signal ml-2"></i></Button>
-					</div> */}
+					<div className="text-center pos_bot">
+						<Button className="create_btn"><span className="font_12">Add favourites</span><i class="fas fa-heart"></i></Button>
+					</div>
 					<Link to = {`/info/${item.id}`}>
 						<div className="img_col_md">
 							<img src={config.imagerootpath + item.poster_path || item.backdrop_path} class="img-fluid img_radius" alt="Shape" />

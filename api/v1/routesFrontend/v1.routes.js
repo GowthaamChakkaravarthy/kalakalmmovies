@@ -1,8 +1,8 @@
 import express from 'express';
 const Router = express();
 
-import Token from './token.routes';
-Router.use('/token',Token);
+import Movie from './movie.routes';
+Router.use('/movie',Movie);
 
 import User from './User.routes';
 Router.use('/user',User);

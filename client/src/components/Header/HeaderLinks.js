@@ -65,6 +65,14 @@ export default function HeaderLinks(props) {
 			<ListItem className={classes.listItem}>
 				<Link className={classes.navLink} to="/Discover">Discover</Link>
 			</ListItem>
+			<ListItem className={classes.listItem}>
+				<Link className={classes.navLink} to="/signup">Signin/Signup</Link>
+			</ListItem>
+			<ListItem className={classes.listItem}>
+				<button className="create_btn" onClick={() => {localStorage.clear() 
+					window.location.href = '/home'
+				}}>Logout</button>
+			</ListItem>
 			<ListItem className={classes.listItem + " menu_dropdown dropdown_header_ul user_dd_ul ml-3"} onClick={toggleUsermenu}>
 				{/* <img src={require("../../assets/images/user_01.png")} alt="User" className="img-fluid user_header" /> */}
 				<div className="noti_parent noti_parnt_user usemneu_dd d-none" id="usemneu_dd">

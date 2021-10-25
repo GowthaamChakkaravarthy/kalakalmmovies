@@ -16,6 +16,14 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { Line, Circle } from 'rc-progress';
 import { getMovies } from "action/movies";
 import Card from "./card";
+import { getFavourite } from "action/movies";
+import { addFavourite } from "action/movies";
+import { toast } from 'react-toastify';
+import config from '../lib/config';
+import { login } from "action/movies";
+import { removFavourite } from "action/movies";
+toast.configure();
+let toasterOption = config.toasterOption;
 const dashboardRoutes = [];
 
 const useStyles = makeStyles(styles);
@@ -30,6 +38,7 @@ function ScrollToTopOnMount() {
 
 export default function Myitems(props) {
 	const classes = useStyles();
+	var userdata = null;
 	const { ...rest } = props;
 	const [movies, setMovies] = useState([]);
 	const [sortby, setSortBy] = useState('popular');
@@ -37,7 +46,10 @@ export default function Myitems(props) {
 	const [loader,showLoader] = useState(false);
 	function toggleIcon() {
 		document.getElementById("myitems_icon_share").classList.toggle('d-flex');
+	}
 
+	if(localStorage.getItem('userData')){
+		userdata = localStorage.getItem('userData')
 	}
 	useEffect(() => {
 		getAllMovies();
@@ -51,6 +63,33 @@ export default function Myitems(props) {
 			console.log('>>>>movieLists', movieLists.list.data.results);
 			setMovies(movieLists.list.data.results);
 			showLoader(false);
+		}
+	}
+	const getFavouriteMovies = async () => {
+		showLoader(true)
+		var movieLists = await getFavourite();
+		console.log('>>>>movieLists', movieLists.resp.data.list);
+		if (movieLists && movieLists.resp && movieLists.resp.data && movieLists.resp.data.list) {
+			setMovies(movieLists.resp.data.list);
+			showLoader(false);
+		}
+	}
+	const addtoFavourite = async (payload) => {
+		var favourites = await addFavourite(payload);
+		console.log('>>>>movieLists', favourites.resp.data.message);
+		if (favourites && favourites.resp && favourites.resp.data && favourites.resp.data.success == true) {
+			// if (favourites.resp.data.list) {
+			// 	setMovies(favourites.resp.data.list);
+			// }
+			toast.success(favourites.resp.data.message || 'Successfully Added',toasterOption);
+		}
+	}
+	const rmvFavourite = async (payload) => {
+		var rmfavourites = await removFavourite(payload);
+		if (rmfavourites && rmfavourites.resp && rmfavourites.resp.data && rmfavourites.resp.data.success == true) {
+			console.log('>>>>rmlists', rmfavourites.resp.data.message);
+			toast.success(rmfavourites.resp.data.message || 'Successfully Removed',toasterOption);
+			getFavouriteMovies();
 		}
 	}
 	const setFilter = async (filter) => {
@@ -96,7 +135,7 @@ export default function Myitems(props) {
 											</div>
 										</div>
 										<div className="text-center">
-											<p className="filter_act_text mb-2">Welcome Guest</p>
+											<p className="filter_act_text mb-2">Welcome {userdata && userdata || "Guest"}</p>
 
 											
 											
@@ -140,9 +179,12 @@ export default function Myitems(props) {
 										      setPage(1)}} aria-selected="false">
 												Latest
 											</a>
-											<a className="nav-link" id="liked-tab" data-toggle="tab" href="#liked" role="tab" aria-controls="liked" aria-selected="false">
-												Favourites
-											</a>
+											{
+											userdata && 
+												<a className="nav-link" id="liked-tab" data-toggle="tab" href="#liked" role="tab" aria-controls="liked" aria-selected="false" onClick={() => getFavouriteMovies()}>
+													Favourites
+												</a>
+											}
 										</div>
 									</nav>
 
@@ -154,17 +196,37 @@ export default function Myitems(props) {
 											<div className="text-center py-2">
 												<div className="row">
 													{
-														movies && movies.map((list , index)=> 
-															<Card 
-																key = {index}
-																item = {list}
-															/>
+														movies && movies.map((item , index)=> 
+														<div className="col-12 col-md-6 col-lg-4 mb-4">
+														<div>
+															<div className="img_overlay">
+																<div className="d-flex justify-content-between pos_top">
+																</div>
+																<div className="text-center pos_bot">
+																	<Button className="create_btn" onClick={() => addtoFavourite(item)}><span className="font_12">Add favourites</span><i class="fas fa-heart"></i></Button>
+																</div>
+																<Link to = {`/info/${item.id}`}>
+																	<div className="img_col_md">
+																		<img src={config.imagerootpath + item.poster_path || item.backdrop_path} class="img-fluid img_radius" alt="Shape" />
+																	</div>
+																</Link>
+															</div>
+															<div className="media mt-3">
+											
+																<div className="media-body flex_body">
+																	<div>
+																		<p className="mt-0 banner_desc_user">{item.title}</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
 														)
 													}
 												</div>
-												<div className="text-center py-3">
+												{/* <div className="text-center py-3">
 													<button className="create_btn" onClick={() => setPage(page + 1)}> Load More {loader == true && <i class="fa fa-spinner ml-2 spinner_icon spin_lg" aria-hidden="true"></i> }  </button>
-												</div>
+												</div> */}
 											</div>
 											{
 												movies.length == 0 && 
@@ -186,11 +248,31 @@ export default function Myitems(props) {
 											<div className="text-center py-2">
 												<div className="row">
 													{
-														movies && movies.map((list , index)=> 
-															<Card 
-																key = {index}
-																item = {list}
-															/>
+														movies && movies.map((item , index)=> 
+														<div className="col-12 col-md-6 col-lg-4 mb-4">
+														<div>
+															<div className="img_overlay">
+																<div className="d-flex justify-content-between pos_top">
+																</div>
+																<div className="text-center pos_bot">
+																	<Button className="create_btn" onClick={() => addtoFavourite(item)}><span className="font_12">Remove favourites</span><i class="fas fa-heart"></i></Button>
+																</div>
+																<Link to = {`/info/${item.id}`}>
+																	<div className="img_col_md">
+																		<img src={config.imagerootpath + item.poster_path || item.backdrop_path} class="img-fluid img_radius" alt="Shape" />
+																	</div>
+																</Link>
+															</div>
+															<div className="media mt-3">
+											
+																<div className="media-body flex_body">
+																	<div>
+																		<p className="mt-0 banner_desc_user">{item.title}</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
 														)
 													}
 												</div>
@@ -209,14 +291,49 @@ export default function Myitems(props) {
 
 									<div className="tab-pane fade" id="liked" role="tabpanel" aria-labelledby="liked-tab">
 										<div className="proposal_panel_overall">
-											<div className="text-center py-3">
-												<p className="not_found_text">No items found</p>
-												<p className="not_found_text_sub">Come back soon! Or try to browse something for you on our marketplace</p>
-												<div className="mt-3">
-													<Button className="create_btn">Browse Marketplace</Button>
+										<div className="text-center py-2">
+												<div className="row">
+													{
+														movies && movies.map((item , index)=> 
+														<div className="col-12 col-md-6 col-lg-4 mb-4">
+														<div>
+															<div className="img_overlay">
+																<div className="d-flex justify-content-between pos_top">
+																</div>
+																<div className="text-center pos_bot">
+																	<Button className="create_btn" onClick={() => {rmvFavourite(item)
+																		getFavourite()}}>
+																			<span className="font_12">Remove favourites</span><i class="fas fa-heart"></i></Button>
+																</div>
+																<Link to = {`/info/${item.id}`}>
+																	<div className="img_col_md">
+																		<img src={config.imagerootpath + item.poster_path || item.backdrop_path} class="img-fluid img_radius" alt="Shape" />
+																	</div>
+																</Link>
+															</div>
+															<div className="media mt-3">
+											
+																<div className="media-body flex_body">
+																	<div>
+																		<p className="mt-0 banner_desc_user">{item.title}</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+														)
+													}
+												</div>
+												<div className="text-center py-3">
+													<button className="create_btn" onClick={() => setPage(page + 1)}> Load More {loader == true && <i class="fa fa-spinner ml-2 spinner_icon spin_lg" aria-hidden="true"></i> }  </button>
 												</div>
 											</div>
-
+											{
+												movies.length == 0 && 
+												<div className="text-center py-3">
+													<p className="not_found_text">No items found</p>
+												</div>
+											}
 										</div>
 									</div>
 
