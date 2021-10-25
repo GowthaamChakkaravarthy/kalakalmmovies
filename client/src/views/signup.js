@@ -28,7 +28,7 @@ function ScrollToTopOnMount() {
 	}, []);
 	return null;
 }
-
+document.title = "Netflix -- KalakalMovies"
 export default function EditProfile(props) {
 	const classes = useStyles();
 	const [post, setPost] = useState({});

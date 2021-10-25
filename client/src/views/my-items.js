@@ -35,7 +35,7 @@ function ScrollToTopOnMount() {
 	}, []);
 	return null;
 }
-
+document.title = "Netflix -- KalakalMovies"
 export default function Myitems(props) {
 	const classes = useStyles();
 	var userdata = null;
